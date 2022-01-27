@@ -1,0 +1,134 @@
+{%assign product = block.settings.product%}
+{%assign thresholdPrice = block.settings.cart_threshold | times:100 %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons" media="all">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
+<div class="gb-center" >
+    <button class="anchor material-icons" is="grab-bag" threshold="{{thresholdPrice}}" id="grab-bag" onclick="closeDiv()" style="background-color:{{block.settings.bgColour}}">
+        <span class="gb-material-icons material-icons" style="color:{{block.settings.iconColour}}">card_giftcard</span> 
+    </button>
+    <div class="notification center" id="gb-Notification"><span class="notification-text">1</span></div>
+</div>
+
+<div class="modal" id="gb-pop-up" style="display:none">
+    <div class="modal-content" id="gb-overlayContent" >
+        <span class="overlay-text">Change this inner html</span>
+    </div>
+    <div class="modal-content" id="gb-giftContent">
+        <span>You Qualify For a Free Gift!</span>
+        {{product.title}}
+        <form method="post" action="/cart/add" id="gb-select-form">
+            {% if product.has_only_default_variant %}
+                {% for variant in product.variants %}
+                {% assign words = variant.title | split: ' ' %}
+                    <div class="variant-option" onclick="variantSelected(this.id)" id="{{ variant.id }}">
+                    <img class="modal-image" src="{{product.featured_image | img_url: 'large'}}" width="40" height="40"
+                            alt="{{product.title}}"/>
+                    <span class="modal-variant-title">{{product.title}}</span>
+                    </div>
+                    <span name="variantSelectid" id="variantSelectID" value="{{ variant.id }}" type="hidden"></span> 
+                {% endfor %}
+
+                {%else%}  
+                {% for variant in product.variants %}
+                    {% assign words = variant.title | split: ' ' %}
+                        <div class="variant-option" onclick="variantSelected(this.id)" id="{{ variant.id }}">
+                            {%if variant.image.src%}
+                            <img class="modal-image" src="{{variant.image.src | img_url: 'large'}}" width="80" height="60"
+                                    alt="{{variant.title}}"/>
+                            <span class="modal-variant-title">{{variant.title}}</span>
+                            {%else%}
+                            <img class="modal-image" src="{{product.featured_image.src | img_url: 'large'}}" width="80" height="60"
+                            alt="{{variant.title}}"/>
+                            <span class="modal-variant-title">{{variant.title}}</span>
+                            {%endif%}
+                        </div>
+                        <span name="variantSelectid" id="variantSelectID" value="{{ variant.id }}" type="hidden"></span>    
+                {% endfor %}
+        {% endif %}
+        <input name="id" value="" id="gb-idInput" type="hidden"/>             
+            <button class="gb-submit-button" id="gb-submit-btn" type="button" name="add" onclick="formSubmit()">
+                <p id="btnText">{{block.settings.cta}}</p>
+            </button>
+      </form>
+    </div>
+    {%assign collectionID = block.settings.collection.id%}
+    <span name="gb-collection" id="gb-collection" value="{{ collectionID }}" type="hidden"></span>
+</div>
+
+<script>
+    function closeDiv(){
+        var popupWindow = document.getElementById("gb-pop-up");
+        var notification = document.getElementById("gb-Notification");
+        var opened = false;
+        if (popupWindow.style.display === "none" && opened === false) {
+            popupWindow.style.display = "grid";
+            notification.style.display = "none";
+        } else {
+            popupWindow.style.display = "none";
+        }
+    }
+
+    function variantSelected(id){
+        var idInput = document.getElementById("gb-idInput");
+        var x = document.getElementById(id);
+        var elements = document.getElementsByClassName("variant-option");
+        if(x.classList.contains("selected")){
+            x.classList.remove("selected");
+            idInput.setAttribute("value", "");
+        }
+        else{
+            x.classList.add("selected");
+            idInput.setAttribute("value", id);
+        }
+        for(i=0; i<elements.length;i++){
+            if(elements[i].classList.contains("selected")){
+                if(elements[i].id != id){
+                    elements[i].classList.remove("selected");
+                }
+            }
+        }
+    }
+
+
+    function formSubmit(){
+        var idInput = document.getElementById("gb-idInput");
+        var inputValue = idInput.value.toString();
+        const btn = document.querySelector("#gb-submit-btn");
+        const btnText = document.querySelector("#btnText");
+        if(!inputValue.trim().length){
+            btnText.innerHTML = "Select a Gift!";
+            return(false);
+        }
+        else{
+            document.getElementById('gb-select-form').submit();
+            btnText.innerHTML = "Thanks!";
+            btn.classList.add("gb-active");
+            return(true);
+        }
+    }
+
+</script>
+
+
+{% schema %}
+{
+    "name":"Gift2Cart Button",
+    "target":"body",
+    "javascript": "grab-bag.js",
+    "stylesheet": "floating-block.css",
+    "settings": [
+        {"type":"product","id":"product","label":"Free Product","autofill":false},
+        {"type":"collection","id":"collection","label":"Eligible Collection"},
+        {"type":"text","id":"cta","label":"Call To Action","default":"Add To Cart"},
+        {"type":"number","id":"cart_threshold","label":"Minimum Order Value"},
+        {"type": "color", "id": "iconColour", "label": "Icon Colour", "default": "#000000"},
+        {"type": "color", "id": "bgColour", "label": "Background Colour", "default": "#ffffff"},
+        {"type": "color", "id": "buttonColour", "label": "Button Colour", "default": "#2F2F2F"}
+    ]
+}
+{% endschema %}
+
+
