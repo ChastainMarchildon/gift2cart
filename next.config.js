@@ -3,7 +3,7 @@ const { parsed: localEnv } = require("dotenv").config();
 const webpack = require("webpack");
 const apiKey = JSON.stringify(process.env.SHOPIFY_API_KEY);
 const envHost = JSON.stringify(process.env.HOST);
-const host = JSON.stringify(process.env.HOST);
+const host = process.env.HOST;
 
 module.exports = {
   async headers() {
@@ -49,6 +49,7 @@ module.exports = {
     return config;
   },
   async rewrites() {
+    console.log(host);
     return [
       {
         source: "/api/:path*",
