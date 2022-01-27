@@ -121,15 +121,6 @@ class MyApp extends App {
   render() {
     const { Component, pageProps, host } = this.props;
 
-    // TODO: Find a way to display an installation page
-
-    // if (!host)
-    //   return (
-    //     <AppProvider i18n={translations}>
-    //       <Component {...pageProps} />
-    //     </AppProvider>
-    //   );
-
     return (
       <AppProvider i18n={translations} linkComponent={LinkComponent}>
         <Provider

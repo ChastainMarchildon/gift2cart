@@ -3,7 +3,7 @@ import "isomorphic-fetch";
 
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
-import { getSubscriptionUrl, createClient } from "./handlers"
+import { getSubscriptionUrl, createClient } from "./handlers";
 import Cryptr from "cryptr";
 import Koa from "koa";
 import Router from "koa-router";
@@ -126,7 +126,7 @@ app.prepare().then(async () => {
         }
         server.context.client = await createClient(shop, accessToken);
         // Redirect to app with shop parameter upon auth
-        await getSubscriptionUrl(ctx,shop,host);
+        await getSubscriptionUrl(ctx, shop, host);
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
       },
     })
@@ -138,7 +138,7 @@ app.prepare().then(async () => {
     ctx.res.statusCode = 200;
   };
 
-  router.post("/api/webhooks", async (ctx) => {
+  router.post("/webhooks", async (ctx) => {
     try {
       await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
       console.log(`Webhook processed, returned status code 200`);
@@ -148,7 +148,7 @@ app.prepare().then(async () => {
   });
 
   router.post(
-    "/api/graphql",
+    "/graphql",
     verifyRequest({ returnHeader: true }),
     async (ctx, next) => {
       await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
@@ -157,26 +157,26 @@ app.prepare().then(async () => {
 
   // API routes HAVE to start with '/api/'
 
-  // router.get("/api/example", verifyRequest(), async (ctx, next) => {
-  //   const {
-  //     id,
-  //     shop,
-  //     state,
-  //     isOnline,
-  //     accessToken,
-  //     scope,
-  //   } = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
+  router.get("/api/example", verifyRequest(), async (ctx, next) => {
+    const {
+      id,
+      shop,
+      state,
+      isOnline,
+      accessToken,
+      scope,
+    } = await Shopify.Utils.loadCurrentSession(ctx.req, ctx.res);
 
-  //   ctx.body = JSON.stringify({
-  //     id: id,
-  //     shop: shop,
-  //     state: state,
-  //     isOnline: isOnline,
-  //     accessToken: accessToken,
-  //     scope: scope,
-  //   });
-  //   ctx.status = 200;
-  // });
+    ctx.body = JSON.stringify({
+      id: id,
+      shop: shop,
+      state: state,
+      isOnline: isOnline,
+      accessToken: accessToken,
+      scope: scope,
+    });
+    ctx.status = 200;
+  });
 
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
   router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
@@ -184,7 +184,7 @@ app.prepare().then(async () => {
   router.get("(.*)", async (ctx) => {
     const shop = ctx.query.shop;
     const host = ctx.query.host;
-    
+
     const findShopCount = await SessionModel.countDocuments({ shop });
     console.log(findShopCount);
     if (findShopCount < 2) {
