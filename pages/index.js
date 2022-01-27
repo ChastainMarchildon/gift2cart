@@ -1,25 +1,6 @@
-import {
-  Button,
-  Card,
-  Page,
-  TextContainer,
-  Layout,
-  MediaCard,
-  List,
-  Banner,
-} from "@shopify/polaris";
-
-import AppLoader from "../components/AppLoader";
-import Link from "next/link";
-import { useAppContext } from "../context/context";
+import { Card, Page, Layout, MediaCard, List, Banner } from "@shopify/polaris";
 
 const Index = () => {
-  const { appContext } = useAppContext();
-
-  const { name, myshopifyDomain, email } = appContext.shop;
-
-  const { id, shop, state, isOnline, accessToken, scope } = appContext.session;
-
   return (
     <Page>
       <Layout>
@@ -53,7 +34,7 @@ const Index = () => {
               </List.Item>
               <List.Item>
                 In this menu, select the discount type to "Buy X Get Y"{" "}
-                <img
+                <Image
                   src="https://i.ibb.co/5W01w50/Create-Discount.png"
                   alt="Create-Discount"
                   border="0"
@@ -65,7 +46,7 @@ const Index = () => {
                 you want to be the minimum threshold for the gift, Make a note
                 of this number as we will need to set this one more time.{" "}
               </List.Item>
-              <img
+              <Image
                 src="https://i.ibb.co/1s685DW/set-Threshold.png"
                 alt="Set Threshold"
                 border="0"
@@ -76,7 +57,7 @@ const Index = () => {
                 offer as a gift, again - make a note of the product as we will
                 need to set this one more time.
               </List.Item>
-              <img
+              <Image
                 src="https://i.ibb.co/fk7Kc0x/Customer-Gets.png"
                 alt="Customer-Gets"
                 border="0"
@@ -106,7 +87,7 @@ const Index = () => {
                 Click on "Theme Settings" in the bottom left and then on "App
                 Embeds" then, find GiftBasket
               </List.Item>
-              <img
+              <Image
                 src="https://i.ibb.co/8KW0ztn/app-Embed-Button.png"
                 alt="app-Embed-Button"
                 border="0"
@@ -117,7 +98,7 @@ const Index = () => {
                 that you did when setting up the discount page, as well as the
                 same price.
               </List.Item>
-              <img
+              <Image
                 src="https://i.ibb.co/wwVVTDT/app-Embed-Settings.png"
                 alt="app-Embed-Settings"
                 border="0"
