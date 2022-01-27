@@ -138,7 +138,7 @@ app.prepare().then(async () => {
     ctx.res.statusCode = 200;
   };
 
-  router.post("/webhooks", async (ctx) => {
+  router.post("/api/webhooks", async (ctx) => {
     try {
       await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
       console.log(`Webhook processed, returned status code 200`);
@@ -148,7 +148,7 @@ app.prepare().then(async () => {
   });
 
   router.post(
-    "/graphql",
+    "/api/graphql",
     verifyRequest({ returnHeader: true }),
     async (ctx, next) => {
       await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
