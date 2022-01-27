@@ -22,7 +22,8 @@ const Index = () => {
                   objectFit: "cover",
                   objectPosition: "center",
                 }}
-                src="https://burst.shopifycdn.com/photos/business-woman-smiling-in-office.jpg?width=1850"
+                src="https://i.ibb.co/6BZZWm8/pexels-porapak-apichodilok-360624.jpg"
+                alt="Giving a gift"
               />
             </MediaCard>
           </Card>
