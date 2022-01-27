@@ -49,7 +49,7 @@ module.exports = {
     return config;
   },
   async rewrites() {
-    var newHost = host.substring(0, str.length - 1);
+    var newHost = host.substring(0, host.length - 1);
     return [
       {
         source: "/api/:path*",
