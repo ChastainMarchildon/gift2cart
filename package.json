@@ -29,6 +29,7 @@
     "@shopify/polaris": "^7.5.0",
     "apollo-boost": "^0.4.9",
     "cross-env": "^7.0.3",
+    "crypto": "^1.0.1",
     "cryptr": "^6.0.2",
     "dotenv": "^8.2.0",
     "graphql": "^15.0.0",
