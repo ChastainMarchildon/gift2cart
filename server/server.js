@@ -232,16 +232,22 @@ app.prepare().then(async () => {
   //ATTEMPT AT HANDLING GDPR WEBHOOKS
   router.use(express.json()); // Clashes with Shopify.Webhooks.Registry.process, so this MUST be AFTER default /webhooks route
   router.post("/customers/data", async (req, res) => {
-    const generatedHash = crypto
-      .createHmac("SHA256", process.env.SHOPIFY_API_SECRET)
-      .update(JSON.stringify(req.body), "utf8")
-      .digest("base64");
-    // this should reference ShopifyHeader.Hmac exported type for future-proofing
-    const hmac = req.get("X-Shopify-Hmac-Sha256");
-    const safeCompareResult = Shopify.Utils.safeCompare(generatedHash, hmac);
-    console.log(safeCompareResult); // Should be true for valid requests
+    try {
+      console.log("request recieved");
+      const generatedHash = crypto
+        .createHmac("SHA256", process.env.SHOPIFY_API_SECRET)
+        .update(JSON.stringify(req.body), "utf8")
+        .digest("base64");
+      // this should reference ShopifyHeader.Hmac exported type for future-proofing
+      const hmac = req.get("X-Shopify-Hmac-Sha256");
+      const safeCompareResult = Shopify.Utils.safeCompare(generatedHash, hmac);
+      console.log(safeCompareResult); // Should be true for valid requests
 
-    res.status(200).send();
+      res.status(200).send();
+    } catch (err) {
+      next(err);
+      console.log(err);
+    }
     // Handle business logic of GDPR endpoint after sending status 200 in live application
   });
 
