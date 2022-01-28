@@ -1,17 +1,17 @@
 import "@babel/polyfill";
 import "isomorphic-fetch";
-import express from "express";
+
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
 import { getSubscriptionUrl, createClient } from "./handlers";
 import Cryptr from "cryptr";
 import Koa from "koa";
 import Router from "koa-router";
+import koaBody from "koa-body";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import next from "next";
 import { webhooks } from "../webhooks/index.js";
-import crypto from "crypto";
 
 const sessionStorage = require("./../utils/sessionStorage.js");
 const SessionModel = require("./../models/SessionModel.js");
@@ -148,6 +148,24 @@ app.prepare().then(async () => {
     }
   });
 
+  router.post("/customers/data_request", koaBody(), async (ctx) => {
+    console.log("Request for Customer Data");
+    console.log(`Body ${ctx.request.body}`);
+    ctx.res.statusCode = 200;
+  });
+
+  router.post("/customers/redact", koaBody(), async (ctx) => {
+    console.log("Request for Customer Redact");
+    console.log(`Body ${ctx.request.body}`);
+    ctx.res.statusCode = 200;
+  });
+
+  router.post("/shop/redact", koaBody(), async (ctx) => {
+    console.log("Request for Shop Redact");
+    console.log(`Body ${ctx.request.body}`);
+    ctx.res.statusCode = 200;
+  });
+
   router.post(
     "/graphql",
     verifyRequest({ returnHeader: true }),
@@ -194,61 +212,6 @@ app.prepare().then(async () => {
     } else {
       await handleRequest(ctx);
     }
-
-    // if (!shop) {
-    //   console.log("SHOP IS UNDEFINED");
-    //   ctx.redirect("/installation");
-    //   return;
-    // }
-
-    // if (useOfflineAccessToken) {
-    //   const isInstalled = await ShopModel.countDocuments({ shop });
-
-    //   if (isInstalled === 0) {
-    //     ctx.redirect(`/install/auth?shop=${shop}`);
-    //   } else {
-    //     const findShopCount = await SessionModel.countDocuments({ shop });
-
-    //     if (findShopCount < 2) {
-    //       await SessionModel.deleteMany({ shop });
-    //       ctx.redirect(`/auth?shop=${shop}`);
-    //     } else {
-    //       await handleRequest(ctx);
-    //     }
-    //   }
-    // } else {
-    //   const findShopCount = await SessionModel.countDocuments({ shop });
-    //   console.log(findShopCount);
-    //   if (findShopCount < 2) {
-    //     await SessionModel.deleteMany({ shop });
-    //     ctx.redirect(`/auth?shop=${shop}`);
-    //   } else {
-    //     console.log(ctx);
-    //     await getSubscriptionUrl(ctx,shop,host)
-    //   }
-    // }
-  });
-
-  //ATTEMPT AT HANDLING GDPR WEBHOOKS
-  router.use(express.json()); // Clashes with Shopify.Webhooks.Registry.process, so this MUST be AFTER default /webhooks route
-  router.post("/customers/data", async (req, res) => {
-    try {
-      console.log("request recieved");
-      const generatedHash = crypto
-        .createHmac("SHA256", process.env.SHOPIFY_API_SECRET)
-        .update(JSON.stringify(req.body), "utf8")
-        .digest("base64");
-      // this should reference ShopifyHeader.Hmac exported type for future-proofing
-      const hmac = req.get("X-Shopify-Hmac-Sha256");
-      const safeCompareResult = Shopify.Utils.safeCompare(generatedHash, hmac);
-      console.log(safeCompareResult); // Should be true for valid requests
-
-      res.status(200).send();
-    } catch (err) {
-      next(err);
-      console.log(err);
-    }
-    // Handle business logic of GDPR endpoint after sending status 200 in live application
   });
 
   server.use(router.allowedMethods());
