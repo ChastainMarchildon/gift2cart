@@ -3,7 +3,11 @@ import "isomorphic-fetch";
 
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
-import { getSubscriptionUrl, createClient } from "./handlers";
+import {
+  getSubscriptionUrl,
+  createClient,
+  getAppSubscriptionStatus,
+} from "./handlers";
 import Cryptr from "cryptr";
 import Koa from "koa";
 import Router from "koa-router";
