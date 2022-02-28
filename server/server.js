@@ -133,7 +133,7 @@ app.prepare().then(async () => {
         // // Redirect to app with shop parameter upon auth
 
         // ctx.redirect(`/?shop=${shop}&host=${host}`);
-        await getSubscriptionUrl(ctx, accessToken, shop);
+        await getSubscriptionUrl(ctx, shop, host);
       },
     })
   );
