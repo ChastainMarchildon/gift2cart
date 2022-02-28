@@ -127,7 +127,13 @@ app.prepare().then(async () => {
         }
         server.context.client = await createClient(shop, accessToken);
         // Redirect to app with shop parameter upon auth
-        await getSubscriptionUrl(ctx, shop, host);
+
+        await getAppSubscriptionStatus(ctx);
+        if (getAppSubscriptionStatus.isActive == false) {
+          await getSubscriptionUrl(ctx, shop, host);
+        } else {
+          ctx.redirect(`/?shop=${shop}&host=${host}`);
+        }
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
       },
     })

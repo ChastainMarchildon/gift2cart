@@ -14,7 +14,7 @@
 
 <div class="modal" id="gb-pop-up" style="display:none">
     <div class="modal-content" id="gb-overlayContent" >
-        <span class="overlay-text">Change this inner html</span>
+        <span class="overlay-text" >Change this inner html</span>
     </div>
     <div class="modal-content" id="gb-giftContent">
         <span>You Qualify For a Free Gift!</span>
@@ -49,13 +49,15 @@
                 {% endfor %}
         {% endif %}
         <input name="id" value="" id="gb-idInput" type="hidden"/>             
-            <button class="gb-submit-button" id="gb-submit-btn" type="button" name="add" onclick="formSubmit()">
+            <button class="gb-submit-button" id="gb-submit-btn" type="button" name="add" style="background-color:{{block.settings.buttonColour}}"onclick="formSubmit()">
                 <p id="btnText">{{block.settings.cta}}</p>
             </button>
       </form>
     </div>
     {%assign collectionID = block.settings.collection.id%}
-    <span name="gb-collection" id="gb-collection" value="{{ collectionID }}" type="hidden"></span>
+    <span name="gb-collectionID" id="gb-collectionID" value="{{ collectionID }}" type="hidden"></span>
+    {%assign collectionTitle = block.settings.collection.title%}
+    <span name="gb-collectionTitle" id="gb-collectionTitle" value="{{ collectionTitle }}" type="hidden"></span>
 </div>
 
 <script>
@@ -126,7 +128,7 @@
         {"type":"number","id":"cart_threshold","label":"Minimum Order Value"},
         {"type": "color", "id": "iconColour", "label": "Icon Colour", "default": "#000000"},
         {"type": "color", "id": "bgColour", "label": "Background Colour", "default": "#ffffff"},
-        {"type": "color", "id": "buttonColour", "label": "Button Colour", "default": "#2F2F2F"}
+        {"type": "color", "id": "buttonColour", "label": "Add to Cart Button Colour", "default": "#2F2F2F"}
     ]
 }
 {% endschema %}
