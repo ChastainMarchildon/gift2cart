@@ -129,16 +129,11 @@ app.prepare().then(async () => {
             console.log(`Successfully registered ${webhook.topic} webhook.`);
           }
         }
-        server.context.client = await createClient(shop, accessToken);
-        // Redirect to app with shop parameter upon auth
+        // server.context.client = await createClient(shop, accessToken);
+        // // Redirect to app with shop parameter upon auth
 
-        await getAppSubscriptionStatus(ctx);
-        if (getAppSubscriptionStatus.isActive == false) {
-          await getSubscriptionUrl(ctx, shop, host);
-        } else {
-          ctx.redirect(`/?shop=${shop}&host=${host}`);
-        }
-        //ctx.redirect(`/?shop=${shop}&host=${host}`);
+        // ctx.redirect(`/?shop=${shop}&host=${host}`);
+        await getSubscriptionUrl(ctx, accessToken, shop);
       },
     })
   );
@@ -220,7 +215,7 @@ app.prepare().then(async () => {
       await SessionModel.deleteMany({ shop });
       ctx.redirect(`/auth?shop=${shop}`);
     } else {
-      await handleRequest(ctx);
+      await getSubscriptionUrl(ctx, shop, host);
     }
   });
 
