@@ -3,11 +3,7 @@ import "isomorphic-fetch";
 
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
-import {
-  getSubscriptionUrl,
-  createClient,
-  getAppSubscriptionStatus,
-} from "./handlers";
+import { getSubscriptionUrl, createClient } from "./handlers";
 import Cryptr from "cryptr";
 import Koa from "koa";
 import Router from "koa-router";
@@ -129,11 +125,10 @@ app.prepare().then(async () => {
             console.log(`Successfully registered ${webhook.topic} webhook.`);
           }
         }
-        // server.context.client = await createClient(shop, accessToken);
-        // // Redirect to app with shop parameter upon auth
-
-        // ctx.redirect(`/?shop=${shop}&host=${host}`);
+        server.context.client = await createClient(shop, accessToken);
+        // Redirect to app with shop parameter upon auth
         await getSubscriptionUrl(ctx, shop, host);
+        //ctx.redirect(`/?shop=${shop}&host=${host}`);
       },
     })
   );
@@ -215,7 +210,7 @@ app.prepare().then(async () => {
       await SessionModel.deleteMany({ shop });
       ctx.redirect(`/auth?shop=${shop}`);
     } else {
-      await getSubscriptionUrl(ctx, shop, host);
+      await handleRequest(ctx);
     }
   });
 
