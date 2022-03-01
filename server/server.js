@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import next from "next";
 import { webhooks } from "../webhooks/index.js";
+import { getAppSubscriptionStatus } from "../billing/queries/GET_ACTIVE_SUBSCRIPTIONS";
 
 const sessionStorage = require("./../utils/sessionStorage.js");
 const SessionModel = require("./../models/SessionModel.js");
@@ -127,6 +128,7 @@ app.prepare().then(async () => {
         }
         server.context.client = await createClient(shop, accessToken);
         // Redirect to app with shop parameter upon auth
+        await getAppSubscriptionStatus(ctx);
         await getSubscriptionUrl(ctx, shop, host);
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
       },

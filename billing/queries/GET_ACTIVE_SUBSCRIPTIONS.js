@@ -35,13 +35,16 @@ export const getAppSubscriptionStatus = async (ctx) => {
   const { client } = ctx;
   const isActive = await client
     .query({
-      query: getActiveSubscriptions
+      query: getActiveSubscriptions,
     })
     .then((response) => {
-      if(response.data.currentAppInstallation.activeSubscriptions.length){
-        return (response.data.currentAppInstallation.activeSubscriptions.length[0].status === "ACTIVE");
-      }
-      else{
+      if (response.data.currentAppInstallation.activeSubscriptions.length) {
+        console.log(response);
+        return (
+          response.data.currentAppInstallation.activeSubscriptions.length[0]
+            .status === "ACTIVE"
+        );
+      } else {
         return false;
       }
     });
