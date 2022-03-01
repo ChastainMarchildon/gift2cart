@@ -69,68 +69,68 @@ export default function Subscription() {
     });
   };
 
-  return (
-    <Page title="Subscriptions" breadcrumbs={[{ content: "Back", url: "/" }]}>
-      <Layout sectioned>
-        <Card
-          sectioned
-          title="Create an app subscription"
-          primaryFooterAction={{
-            content: "Create",
-            onAction: handleCreateSubscription,
-          }}
-        >
-          <TextContainer>
-            <p>
-              Click on the button to create a test subscription for a plan for
-              $10/month with a 14 day trial
-            </p>
-          </TextContainer>
-        </Card>
-        <Card
-          sectioned
-          title="Currently Active Subscription"
-          primaryFooterAction={
-            data?.appInstallation.activeSubscriptions[0] && {
-              content: "Cancel Subscription",
-              destructive: true,
-              onAction: handleCancelSubscription,
-            }
-          }
-        >
-          {loading ? (
-            <Spinner />
-          ) : !data.appInstallation.activeSubscriptions[0] ? (
-            <TextContainer>
-              <p>No active subscription.</p>
-            </TextContainer>
-          ) : (
-            <Stack distribution="equalSpacing" alignment="center">
-              {activeSubscription && (
-                <TextContainer>
-                  <p>Name: {activeSubscription.name}</p>
-                  <p>Created at: {activeSubscription.createdAt}</p>
-                  <p>Id: {activeSubscription.id}</p>
-                  <p>Status: {activeSubscription.status}</p>
-                  <p>Trialdays: {activeSubscription.trialDays}</p>
-                  <p>
-                    Price:{" "}
-                    {
-                      activeSubscription.lineItems[0].plan.pricingDetails.price
-                        .amount
-                    }{" "}
-                    {
-                      activeSubscription.lineItems[0].plan.pricingDetails.price
-                        .currencyCode
-                    }
-                  </p>
-                  <p>Test: {activeSubscription.test.toString()}</p>
-                </TextContainer>
-              )}
-            </Stack>
-          )}
-        </Card>
-      </Layout>
-    </Page>
-  );
+  // return (
+  //   <Page title="Subscriptions" breadcrumbs={[{ content: "Back", url: "/" }]}>
+  //     <Layout sectioned>
+  //       <Card
+  //         sectioned
+  //         title="Create an app subscription"
+  //         primaryFooterAction={{
+  //           content: "Create",
+  //           onAction: handleCreateSubscription,
+  //         }}
+  //       >
+  //         <TextContainer>
+  //           <p>
+  //             Click on the button to create a test subscription for a plan for
+  //             $10/month with a 14 day trial
+  //           </p>
+  //         </TextContainer>
+  //       </Card>
+  //       <Card
+  //         sectioned
+  //         title="Currently Active Subscription"
+  //         primaryFooterAction={
+  //           data?.appInstallation.activeSubscriptions[0] && {
+  //             content: "Cancel Subscription",
+  //             destructive: true,
+  //             onAction: handleCancelSubscription,
+  //           }
+  //         }
+  //       >
+  //         {loading ? (
+  //           <Spinner />
+  //         ) : !data.appInstallation.activeSubscriptions[0] ? (
+  //           <TextContainer>
+  //             <p>No active subscription.</p>
+  //           </TextContainer>
+  //         ) : (
+  //           <Stack distribution="equalSpacing" alignment="center">
+  //             {activeSubscription && (
+  //               <TextContainer>
+  //                 <p>Name: {activeSubscription.name}</p>
+  //                 <p>Created at: {activeSubscription.createdAt}</p>
+  //                 <p>Id: {activeSubscription.id}</p>
+  //                 <p>Status: {activeSubscription.status}</p>
+  //                 <p>Trialdays: {activeSubscription.trialDays}</p>
+  //                 <p>
+  //                   Price:{" "}
+  //                   {
+  //                     activeSubscription.lineItems[0].plan.pricingDetails.price
+  //                       .amount
+  //                   }{" "}
+  //                   {
+  //                     activeSubscription.lineItems[0].plan.pricingDetails.price
+  //                       .currencyCode
+  //                   }
+  //                 </p>
+  //                 <p>Test: {activeSubscription.test.toString()}</p>
+  //               </TextContainer>
+  //             )}
+  //           </Stack>
+  //         )}
+  //       </Card>
+  //     </Layout>
+  //   </Page>
+  // );
 }
