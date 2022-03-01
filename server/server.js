@@ -125,7 +125,7 @@ app.prepare().then(async () => {
             console.log(`Successfully registered ${webhook.topic} webhook.`);
           }
         }
-        //server.context.client = await createClient(shop, accessToken);
+        server.context.client = await createClient(shop, accessToken);
         // Redirect to app with shop parameter upon auth
         await getSubscriptionUrl(ctx, shop, host);
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
