@@ -75,70 +75,70 @@ app.prepare().then(async () => {
 
   // Uncomment to use offline and online access tokens
 
-  useOfflineAccessToken = true;
-
-  server.use(
-    createShopifyAuth({
-      accessMode: "offline",
-      prefix: "/install",
-      async afterAuth(ctx) {
-        const { shop, accessToken, scope } = ctx.state.shopify;
-        const host = ctx.query.host;
-
-        const result = await ShopModel.findOne({ shop: shop });
-
-        if (!result) {
-          await ShopModel.create({
-            shop: shop,
-            accessToken: cryption.encrypt(accessToken),
-            scope: scope,
-          }).then(await getSubscriptionUrl(ctx, shop, host));
-        } else {
-          ctx.redirect(`/auth?shop=${shop}&host=${host}`);
-        }
-      },
-    })
-  );
+  // useOfflineAccessToken = true;
 
   // server.use(
   //   createShopifyAuth({
+  //     accessMode: "offline",
+  //     prefix: "/install",
   //     async afterAuth(ctx) {
-  //       // Access token and shop available in ctx.state.shopify
   //       const { shop, accessToken, scope } = ctx.state.shopify;
   //       const host = ctx.query.host;
-  //       // ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
-  //       for (const webhook of webhooks) {
-  //         const response = await Shopify.Webhooks.Registry.register({
-  //           shop,
-  //           accessToken,
-  //           path: webhook.path,
-  //           topic: webhook.topic,
-  //           webhookHandler: webhook.webhookHandler,
-  //         });
+  //       const result = await ShopModel.findOne({ shop: shop });
 
-  //         if (!response.success) {
-  //           console.log(
-  //             `Failed to register ${webhook.topic} webhook: ${response.result}`
-  //           );
-  //         } else {
-  //           console.log(`Successfully registered ${webhook.topic} webhook.`);
-  //         }
-  //       }
-  //       server.context.client = await createClient(shop, accessToken);
-  //       // Redirect to app with shop parameter upon auth
-  //       //await getSubscriptionUrl(ctx, shop, host);
-  //       //ctx.redirect(`/?shop=${shop}&host=${host}`);
-  //       const findShopCount = await SessionModel.countDocuments({ shop });
-  //       console.log("checking shop after creating auth");
-  //       if (findShopCount < 2) {
-  //         ctx.redirect(`/?shop=${shop}&host=${host}`);
+  //       if (!result) {
+  //         await ShopModel.create({
+  //           shop: shop,
+  //           accessToken: cryption.encrypt(accessToken),
+  //           scope: scope,
+  //         }).then(await getSubscriptionUrl(ctx, shop, host));
   //       } else {
-  //         await getSubscriptionUrl(ctx, shop, host);
+  //         ctx.redirect(`/auth?shop=${shop}&host=${host}`);
   //       }
   //     },
   //   })
   // );
+
+  server.use(
+    createShopifyAuth({
+      async afterAuth(ctx) {
+        // Access token and shop available in ctx.state.shopify
+        const { shop, accessToken, scope } = ctx.state.shopify;
+        const host = ctx.query.host;
+        // ACTIVE_SHOPIFY_SHOPS[shop] = scope;
+
+        for (const webhook of webhooks) {
+          const response = await Shopify.Webhooks.Registry.register({
+            shop,
+            accessToken,
+            path: webhook.path,
+            topic: webhook.topic,
+            webhookHandler: webhook.webhookHandler,
+          });
+
+          if (!response.success) {
+            console.log(
+              `Failed to register ${webhook.topic} webhook: ${response.result}`
+            );
+          } else {
+            console.log(`Successfully registered ${webhook.topic} webhook.`);
+          }
+        }
+        server.context.client = await createClient(shop, accessToken);
+        // Redirect to app with shop parameter upon auth
+        //await getSubscriptionUrl(ctx, shop, host);
+        //ctx.redirect(`/?shop=${shop}&host=${host}`);
+        const findShopCount = await SessionModel.countDocuments({ shop });
+        console.log("checking shop after creating auth");
+        if (findShopCount < 2) {
+          ctx.redirect(`/?shop=${shop}&host=${host}`);
+        } else {
+          await getSubscriptionUrl(ctx, shop, host);
+        }
+      },
+    })
+  );
 
   const handleRequest = async (ctx) => {
     await handle(ctx.req, ctx.res);
