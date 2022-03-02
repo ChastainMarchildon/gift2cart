@@ -131,7 +131,7 @@ app.prepare().then(async () => {
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
         const findShopCount = await SessionModel.countDocuments({ shop });
         console.log("checking shop after creating auth");
-        if (findShopCount != 0) {
+        if (findShopCount < 2) {
           ctx.redirect(`/?shop=${shop}&host=${host}`);
         } else {
           await getSubscriptionUrl(ctx, shop, host);
