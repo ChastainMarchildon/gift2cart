@@ -131,7 +131,7 @@ app.prepare().then(async () => {
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
         const findShopCount = await SessionModel.countDocuments({ shop });
         console.log("checking shop after creating auth");
-        if (findShopCount < 2) {
+        if (findShopCount > 2) {
           await SessionModel.deleteMany({ shop });
           ctx.redirect(`/?shop=${shop}&host=${host}`);
         } else {

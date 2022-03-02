@@ -125,7 +125,8 @@ class GrabBag extends HTMLButtonElement {
     console.log(result.threshholdMet, result.giftAdded);
     if (result.threshholdMet) {
       if (result.giftAdded) {
-        overlay.innerHTML = "Gift Added!";
+        overlay.innerHTML = "🎉Gift Added!🎁";
+        overlay.style = "font-size:150%";
         giftSelect.style.display = "none";
         notification.style.display = "grid";
         return;
@@ -143,7 +144,8 @@ class GrabBag extends HTMLButtonElement {
         difference +
         " more in the " +
         collection +
-        " collection for a free gift!";
+        " collection for a <b>free</b> gift! 🎁";
+      overlay.style = "font-size:150%";
     }
   }
 

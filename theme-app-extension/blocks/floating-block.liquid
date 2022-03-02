@@ -17,14 +17,13 @@
         <span class="overlay-text" >Change this inner html</span>
     </div>
     <div class="modal-content" id="gb-giftContent">
-        <span>You Qualify For a Free Gift!</span>
-        {{product.title}}
-        <form method="post" action="/cart/add" id="gb-select-form">
+        <span>You Qualify For a Free Gift! {{product.title}}</span>
+        <form method="post" action="/cart/add" id="gb-select-form" style="display:grid">
             {% if product.has_only_default_variant %}
                 {% for variant in product.variants %}
                 {% assign words = variant.title | split: ' ' %}
                     <div class="variant-option" onclick="variantSelected(this.id)" id="{{ variant.id }}">
-                    <img class="modal-image" src="{{product.featured_image | img_url: 'large'}}" width="40" height="40"
+                    <img class="modal-image" src="{{product.featured_image | img_url: 'large'}}" width="55" height="55"
                             alt="{{product.title}}"/>
                     <span class="modal-variant-title">{{product.title}}</span>
                     </div>

@@ -57,13 +57,14 @@ button[is="grab-bag"] {
   z-index: 2; /* Sit on top */
   bottom: 15%;
   right: 20px;
-  width: 25vw;
+  width: 15vw;
   height: 50vh;
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
   border-radius: 5px;
   text-align: center;
+  min-width: 225px;
 }
 
 /* Modal Content/Box */
@@ -96,10 +97,12 @@ button[is="grab-bag"] {
 }
 
 .variant-option {
-  border-bottom: #888 1px solid;
+  border: #888 1px solid;
   padding: 5px;
   align-content: center;
   border-radius: 5px;
+  display: inline-flex;
+  justify-content: center;
 }
 
 .variant-option:hover {
@@ -111,11 +114,12 @@ button[is="grab-bag"] {
 }
 
 .modal-image {
-  margin-top: 10%;
 }
 
 .modal-variant-title {
   margin-left: 10%;
+  text-align: center;
+  margin-block: auto;
 }
 
 .selected {
