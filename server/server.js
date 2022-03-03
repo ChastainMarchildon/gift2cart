@@ -17,7 +17,7 @@ const sessionStorage = require("./../utils/sessionStorage.js");
 const SessionModel = require("./../models/SessionModel.js");
 const ShopModel = require("./../models/ShopModel.js");
 
-const cryption = new Cryptr(process.env.ENCRYPTION_STRING);
+//const cryption = new Cryptr(process.env.ENCRYPTION_STRING);
 
 // MongoDB Connection
 const mongoUrl =
