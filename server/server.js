@@ -17,7 +17,7 @@ const sessionStorage = require("./../utils/sessionStorage.js");
 const SessionModel = require("./../models/SessionModel.js");
 const ShopModel = require("./../models/ShopModel.js");
 
-//const cryption = new Cryptr(process.env.ENCRYPTION_STRING);
+const cryption = new Cryptr(process.env.ENCRYPTION_STRING);
 
 // MongoDB Connection
 const mongoUrl =
@@ -59,7 +59,7 @@ Shopify.Context.initialize({
 // Reload webhooks after server restart
 
 for (const webhook of webhooks) {
-  Shopify.Webhooks.Registry.register({
+  Shopify.Webhooks.Registry.webhookRegistry.push({
     path: webhook.path,
     topic: webhook.topic,
     webhookHandler: webhook.webhookHandler,
@@ -108,23 +108,29 @@ app.prepare().then(async () => {
         const host = ctx.query.host;
         // ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
-        for (const webhook of webhooks) {
-          const response = await Shopify.Webhooks.Registry.register({
-            shop,
-            accessToken,
-            path: webhook.path,
-            topic: webhook.topic,
-            webhookHandler: webhook.webhookHandler,
-          });
+        Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
+          path: "/webhooks",
+          webhookHandler: async (topic, shop, body) =>
+            delete ACTIVE_SHOPIFY_SHOPS[shop],
+        });
 
-          if (!response.success) {
-            console.log(
-              `Failed to register ${webhook.topic} webhook: ${response.result}`
-            );
-          } else {
-            console.log(`Successfully registered ${webhook.topic} webhook.`);
-          }
-        }
+        // for (const webhook of webhooks) {
+        //   const response = await Shopify.Webhooks.Registry.register({
+        //     shop,
+        //     accessToken,
+        //     path: webhook.path,
+        //     topic: webhook.topic,
+        //     webhookHandler: webhook.webhookHandler,
+        //   });
+
+        //   if (!response.success) {
+        //     console.log(
+        //       `Failed to register ${webhook.topic} webhook: ${response.result}`
+        //     );
+        //   } else {
+        //     console.log(`Successfully registered ${webhook.topic} webhook.`);
+        //   }
+        // }
         server.context.client = await createClient(shop, accessToken);
         // Redirect to app with shop parameter upon auth
         //await getSubscriptionUrl(ctx, shop, host);
