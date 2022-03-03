@@ -59,7 +59,7 @@ Shopify.Context.initialize({
 // Reload webhooks after server restart
 
 for (const webhook of webhooks) {
-  Shopify.Webhooks.Registry.webhookRegistry.push({
+  Shopify.Webhooks.Registry.register({
     path: webhook.path,
     topic: webhook.topic,
     webhookHandler: webhook.webhookHandler,
