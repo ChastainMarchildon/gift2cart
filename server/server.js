@@ -108,29 +108,23 @@ app.prepare().then(async () => {
         const host = ctx.query.host;
         // ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
-        Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
-          path: "/webhooks",
-          webhookHandler: async (topic, shop, body) =>
-            delete ACTIVE_SHOPIFY_SHOPS[shop],
-        });
+        for (const webhook of webhooks) {
+          const response = await Shopify.Webhooks.Registry.register({
+            shop,
+            accessToken,
+            path: webhook.path,
+            topic: webhook.topic,
+            webhookHandler: webhook.webhookHandler,
+          });
 
-        // for (const webhook of webhooks) {
-        //   const response = await Shopify.Webhooks.Registry.register({
-        //     shop,
-        //     accessToken,
-        //     path: webhook.path,
-        //     topic: webhook.topic,
-        //     webhookHandler: webhook.webhookHandler,
-        //   });
-
-        //   if (!response.success) {
-        //     console.log(
-        //       `Failed to register ${webhook.topic} webhook: ${response.result}`
-        //     );
-        //   } else {
-        //     console.log(`Successfully registered ${webhook.topic} webhook.`);
-        //   }
-        // }
+          if (!response.success) {
+            console.log(
+              `Failed to register ${webhook.topic} webhook: ${response.result}`
+            );
+          } else {
+            console.log(`Successfully registered ${webhook.topic} webhook.`);
+          }
+        }
         server.context.client = await createClient(shop, accessToken);
         // Redirect to app with shop parameter upon auth
         //await getSubscriptionUrl(ctx, shop, host);
