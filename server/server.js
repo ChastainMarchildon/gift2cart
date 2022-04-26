@@ -129,13 +129,7 @@ app.prepare().then(async () => {
         // Redirect to app with shop parameter upon auth
         //await getSubscriptionUrl(ctx, shop, host);
         //ctx.redirect(`/?shop=${shop}&host=${host}`);
-        const findShopCount = await SessionModel.countDocuments({ shop });
-        console.log("checking shop after creating auth");
-        if (findShopCount < 2) {
-          ctx.redirect(`/?shop=${shop}&host=${host}`);
-        } else {
-          await getSubscriptionUrl(ctx, shop, host);
-        }
+        ctx.redirect(`/?shop=${shop}&host=${host}`);
       },
     })
   );
@@ -209,37 +203,16 @@ app.prepare().then(async () => {
   router.get("/installation", handleRequest);
   router.get("(.*)", async (ctx) => {
     const shop = ctx.query.shop;
+    const findShopCount = await SessionModel.countDocuments({
+      shop,
+      isActive: true,
+    });
 
-    // if (!shop) {
-    //   console.log("SHOP IS UNDEFINED");
-    //   ctx.redirect("/installation");
-    //   return;
-    // }
-
-    if (useOfflineAccessToken) {
-      const isInstalled = await ShopModel.countDocuments({ shop });
-
-      if (isInstalled === 0) {
-        ctx.redirect(`/install/auth?shop=${shop}`);
-      } else {
-        const findShopCount = await SessionModel.countDocuments({ shop });
-
-        if (findShopCount < 2) {
-          await SessionModel.deleteMany({ shop });
-          ctx.redirect(`/auth?shop=${shop}`);
-        } else {
-          await handleRequest(ctx);
-        }
-      }
+    if (findShopCount < 1) {
+      await SessionModel.findOneAndUpdate({ shop }, { isActive: true });
+      ctx.redirect(`/auth?shop=${shop}`);
     } else {
-      const findShopCount = await SessionModel.countDocuments({ shop });
-
-      if (findShopCount < 2) {
-        await SessionModel.deleteMany({ shop });
-        ctx.redirect(`/auth?shop=${shop}`);
-      } else {
-        await handleRequest(ctx);
-      }
+      await handleRequest(ctx);
     }
   });
 
